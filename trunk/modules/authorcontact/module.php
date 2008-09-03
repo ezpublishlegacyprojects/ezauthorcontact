@@ -2,7 +2,7 @@
 //
 // Created on: <Thu Feb 16 10:12:34 CET 2006 ls@ez.no>
 //
-// Copyright (C) 1999-2006 eZ Systems as. All rights reserved.
+// Copyright (C) 1999-2008 eZ Systems as. All rights reserved.
 //
 // This source file is part of the eZ Publish (tm) Open Source Content
 // Management System.
@@ -37,10 +37,10 @@ $Module = array( 'name' => 'authorcontact' );
 
 $ViewList = array();
 $ViewList['form'] = array( 'script' => 'form.php',
-							'default_navigation_part' => 'ezcustomnavigationpart',
-							 'params' => array( 'user_id' => 'UserID', 'node_id' => 'NodeID' ) );
+                           'default_navigation_part' => 'ezcustomnavigationpart',
+                           'params' => array( 'user_id' => 'UserID', 'node_id' => 'NodeID' ) );
 $ViewList['formprocess'] = array( 'script' => 'formprocess.php',
-							'default_navigation_part' => 'ezcustomnavigationpart',
-							 'single_post_actions' => array( 'SendButton' => 'Send', 'CancelButton' => 'Cancel', 'BackButton' => 'Back' ) );
+                                  'default_navigation_part' => 'ezcustomnavigationpart',
+                                  'single_post_actions' => array( 'SendButton' => 'Send', 'CancelButton' => 'Cancel', 'BackButton' => 'Back' ) );
 
 ?>

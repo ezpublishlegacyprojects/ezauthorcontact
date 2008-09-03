@@ -2,7 +2,7 @@
 //
 // Created on: <Thu Feb 16 10:15:04 CET 2006 ls@ez.no>
 //
-// Copyright (C) 1999-2006 eZ Systems as. All rights reserved.
+// Copyright (C) 1999-2008 eZ Systems as. All rights reserved.
 //
 // This source file is part of the eZ Publish (tm) Open Source Content
 // Management System.
@@ -33,89 +33,88 @@
 // you.
 //
 
-include_once( 'lib/ezutils/classes/ezhttptool.php' );
-include_once( 'kernel/common/template.php' );
+require_once( 'kernel/common/template.php' );
 
-$Module =& $Params['Module'];
+$Module = $Params['Module'];
 $parameters = $Params['Parameters'];
 
 $nodeID = 0;
 $userID = 0;
 
-$http =& eZHTTPTool::instance();
-$tpl =& templateInit();
+$http = eZHTTPTool::instance();
+$tpl = templateInit();
 
-if ( isset( $parameters['validation'] ) ) 
+if ( isset( $parameters['validation'] ) )
 {
-	$validation = $parameters['validation'];	
+    $validation = $parameters['validation'];
 }
-else 
+else
 {
-	$validation['processed'] = false;
+    $validation['processed'] = false;
 }
 
-if ( isset( $parameters['user_id'] ) ) 
-	$userID = $parameters['user_id'];
+if ( isset( $parameters['user_id'] ) )
+    $userID = $parameters['user_id'];
 
-if ( isset( $parameters['node_id'] ) ) 
-	$nodeID = $parameters['node_id'];	
-	
-if ( is_numeric( $Params['UserID'] ) ) 
-	$userID = $Params['UserID'];	
+if ( isset( $parameters['node_id'] ) )
+    $nodeID = $parameters['node_id'];
+    
+if ( is_numeric( $Params['UserID'] ) )
+    $userID = $Params['UserID'];
 
-if ( is_numeric( $Params['NodeID'] ) ) 
-	$nodeID = $Params['NodeID'];
-	
+if ( is_numeric( $Params['NodeID'] ) )
+    $nodeID = $Params['NodeID'];
+    
 $user = eZUser::fetch( $userID );
 
 if ( !$user )
-	return $Module->handleError( EZ_ERROR_KERNEL_NOT_FOUND, 'kernel' );	
+    return $Module->handleError( EZ_ERROR_KERNEL_NOT_FOUND, 'kernel' );
 
-$object =& $user->attribute( 'contentobject' );
+$object = $user->attribute( 'contentobject' );
 
 if ( !$object )
-	return $Module->handleError( EZ_ERROR_KERNEL_NOT_FOUND, 'kernel' );		
+    return $Module->handleError( EZ_ERROR_KERNEL_NOT_FOUND, 'kernel' );
 
 $authorName = $object->attribute( 'name' );
 $contentObjectID = $object->attribute( 'id' );
 
 
-if ( isset( $parameters['name'] ) ) 
+if ( isset( $parameters['name'] ) )
 {
-	$name = $parameters['name'];
-	$tpl->setVariable( 'name', $name );
+    $name = $parameters['name'];
+    $tpl->setVariable( 'name', $name );
 }
 
-if ( isset( $parameters['user_redirect_uri'] ) ) 
+if ( isset( $parameters['user_redirect_uri'] ) )
 {
-	$userRedirectURI = $parameters['user_redirect_uri'];
-	$tpl->setVariable( 'redirect_uri', $userRedirectURI );
+    $userRedirectURI = $parameters['user_redirect_uri'];
+    $tpl->setVariable( 'redirect_uri', $userRedirectURI );
 }
 else 
 {
-	if( isset( $GLOBALS['HTTP_SERVER_VARS']['HTTP_REFERER'] ) )
-	{
-		$userRedirectURI = $GLOBALS['HTTP_SERVER_VARS']['HTTP_REFERER'];
-		$tpl->setVariable( 'redirect_uri', $userRedirectURI );
-	}
+    if( isset( $GLOBALS['HTTP_SERVER_VARS']['HTTP_REFERER'] ) )
+    {
+        $userRedirectURI = $GLOBALS['HTTP_SERVER_VARS']['HTTP_REFERER'];
+        $tpl->setVariable( 'redirect_uri', $userRedirectURI );
+    }
 }
 
-if ( isset( $parameters['email'] ) ) 
+if ( isset( $parameters['email'] ) )
 {
-	$email = $parameters['email'];
-	$tpl->setVariable( 'email', $email );
+    $email = $parameters['email'];
+    $tpl->setVariable( 'email', $email );
 }
 
-if ( isset( $parameters['subject'] ) ) 
+if ( isset( $parameters['subject'] ) )
 {
-	$subject = $parameters['subject'];
-	$tpl->setVariable( 'subject', $subject );
+    $subject = $parameters['subject'];
+    $tpl->setVariable( 'subject', $subject );
 }
 
-if ( isset( $parameters['message'] ) ) 
+if ( isset( $parameters['message'] ) )
 {
-	$message = $parameters['message'];
-	$tpl->setVariable( 'message', $message );
+    $message = $parameters['message'];
+    $tpl->setVariable( 'message', $message );
 }
 
 $tpl->setVariable( 'author_name', $authorName );

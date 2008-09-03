@@ -2,7 +2,7 @@
 //
 // Created on: <Thu Feb 16 13:35:41 CET 2006 ls@ez.no>
 //
-// Copyright (C) 1999-2006 eZ Systems as. All rights reserved.
+// Copyright (C) 1999-2008 eZ Systems as. All rights reserved.
 //
 // This source file is part of the eZ Publish (tm) Open Source Content
 // Management System.
@@ -33,167 +33,163 @@
 // you.
 //
 
-include_once( 'lib/ezutils/classes/ezhttptool.php' );
-include_once( 'kernel/common/template.php' );
-include_once( 'lib/ezutils/classes/ezmail.php' );
-include_once( 'lib/ezutils/classes/ezmailtransport.php' );
+require_once( 'kernel/common/template.php' );
 
-$Module =& $Params["Module"];
+$Module = $Params["Module"];
 
-$http =& eZHTTPTool::instance();
-$tpl =& templateInit();
+$http = eZHTTPTool::instance();
+$tpl = templateInit();
 
 $validation = array();
 $parameters = array();
 
 if ( $Module->isCurrentAction( 'Send' ) )
 {
-	if ( $http->hasPostVariable( 'Name' ) )
-	{
-		$name = $http->postVariable( 'Name' );
-		
-		if ( $name == '' )
-		{
-			$validation['processed'] = true;
-			$validation['attributes'][] = array( 'name' => ezi18n( 'extension/authorcontact', 'Name' ), 'description' => ezi18n( 'extension/authorcontact', 'Input required.' ) );
-		}
-		else 
-		{
-			$parameters['name'] = $name;
-		}
-	}
-	
-	if ( $http->hasPostVariable( 'Email' ) )
-	{
-		$email = $http->postVariable( 'Email' );
-		
-		if ( $email == '' )
-		{
-			$validation['processed'] = true;
-			$validation['attributes'][] = array( 'name' => ezi18n( 'extension/authorcontact', 'E-mail' ), 'description' => ezi18n( 'extension/authorcontact', 'Input required.' ) );
-		}
-		else 
-		{
-			if ( !eZMail::validate( $email ) )
-			{
-				$validation['processed'] = true;
-				$validation['attributes'][] = array( 'name' => ezi18n( 'extension/authorcontact', 'E-mail' ), 'description' => ezi18n( 'extension/authorcontact', 'Invalid address syntax.' ) );
-			}
-			
-			$parameters['email'] = $email;
-		}
-	}
-	
-	if ( $http->hasPostVariable( 'Subject' ) )
-	{
-		$subject = $http->postVariable( 'Subject' );
-		
-		if ( $subject == '' )
-		{
-			$validation['processed'] = true;
-			$validation['attributes'][] = array( 'name' => ezi18n( 'extension/authorcontact', 'Subject' ), 'description' => ezi18n( 'extension/authorcontact', 'Input required.' ) );			
-		}
-		else 
-		{
-			$parameters['subject'] = $subject;
-		}
-	}
-	
-	if ( $http->hasPostVariable( 'Message' ) )
-	{
-		$message = $http->postVariable( 'Message' );
-		
-		if ( $message == '' )
-		{
-			$validation['processed'] = true;
-			$validation['attributes'][] = array( 'name' => ezi18n( 'extension/authorcontact', 'Message' ), 'description' => ezi18n( 'extension/authorcontact', 'Input required.' ) );			
-		}
-		else 
-		{
-			$parameters['message'] = $message;
-		}
-	}
-	
-	if ( $http->hasPostVariable( 'ContentObjectID' ) )
-	{
-		$objectID = $http->postVariable( 'ContentObjectID' );
-		$parameters['user_id'] = $objectID;
-	}
+    if ( $http->hasPostVariable( 'Name' ) )
+    {
+        $name = $http->postVariable( 'Name' );
+        
+        if ( $name == '' )
+        {
+            $validation['processed'] = true;
+            $validation['attributes'][] = array( 'name' => ezi18n( 'extension/authorcontact', 'Name' ), 'description' => ezi18n( 'extension/authorcontact', 'Input required.' ) );
+        }
+        else 
+        {
+            $parameters['name'] = $name;
+        }
+    }
+    
+    if ( $http->hasPostVariable( 'Email' ) )
+    {
+        $email = $http->postVariable( 'Email' );
+        
+        if ( $email == '' )
+        {
+            $validation['processed'] = true;
+            $validation['attributes'][] = array( 'name' => ezi18n( 'extension/authorcontact', 'E-mail' ), 'description' => ezi18n( 'extension/authorcontact', 'Input required.' ) );
+        }
+        else 
+        {
+            if ( !eZMail::validate( $email ) )
+            {
+                $validation['processed'] = true;
+                $validation['attributes'][] = array( 'name' => ezi18n( 'extension/authorcontact', 'E-mail' ), 'description' => ezi18n( 'extension/authorcontact', 'Invalid address syntax.' ) );
+            }
+            
+            $parameters['email'] = $email;
+        }
+    }
+    
+    if ( $http->hasPostVariable( 'Subject' ) )
+    {
+        $subject = $http->postVariable( 'Subject' );
+        
+        if ( $subject == '' )
+        {
+            $validation['processed'] = true;
+            $validation['attributes'][] = array( 'name' => ezi18n( 'extension/authorcontact', 'Subject' ), 'description' => ezi18n( 'extension/authorcontact', 'Input required.' ) );            
+        }
+        else 
+        {
+            $parameters['subject'] = $subject;
+        }
+    }
+    
+    if ( $http->hasPostVariable( 'Message' ) )
+    {
+        $message = $http->postVariable( 'Message' );
+        
+        if ( $message == '' )
+        {
+            $validation['processed'] = true;
+            $validation['attributes'][] = array( 'name' => ezi18n( 'extension/authorcontact', 'Message' ), 'description' => ezi18n( 'extension/authorcontact', 'Input required.' ) );            
+        }
+        else 
+        {
+            $parameters['message'] = $message;
+        }
+    }
+    
+    if ( $http->hasPostVariable( 'ContentObjectID' ) )
+    {
+        $objectID = $http->postVariable( 'ContentObjectID' );
+        $parameters['user_id'] = $objectID;
+    }
 
-	if ( $http->hasPostVariable( 'ContentNodeID' ) )
-	{
-		$nodeID = $http->postVariable( 'ContentNodeID' );
-		$parameters['node_id'] = $nodeID;
+    if ( $http->hasPostVariable( 'ContentNodeID' ) )
+    {
+        $nodeID = $http->postVariable( 'ContentNodeID' );
+        $parameters['node_id'] = $nodeID;
 
-		$tpl->setVariable( 'node_id', $nodeID );
-	}
+        $tpl->setVariable( 'node_id', $nodeID );
+    }
 
-	if ( $http->hasPostVariable( 'UserRedirectURI' ) )
-	{
-		$userRedirectURI = $http->postVariable( 'UserRedirectURI' );
-		$parameters['user_redirect_uri'] = $userRedirectURI;
-		
-		$tpl->setVariable( 'redirect_uri', $userRedirectURI );
-	}
+    if ( $http->hasPostVariable( 'UserRedirectURI' ) )
+    {
+        $userRedirectURI = $http->postVariable( 'UserRedirectURI' );
+        $parameters['user_redirect_uri'] = $userRedirectURI;
+        
+        $tpl->setVariable( 'redirect_uri', $userRedirectURI );
+    }
 
-	if ( !empty( $validation ) ) 
-	{
-		$parameters['validation'] = $validation;
-		
-		return $Module->run( 'form', $parameters );
-	}
-	
-	$mail = new eZMail();
-	
-	$user = eZUser::fetch( $objectID );
-	
-	$mail->setReceiver( $user->attribute( 'email' ) );
-	$mail->setSender( $email, $name );
-	$mail->setSubject( $subject );
-	$mail->setBody( $message );
-	$mailResult = eZMailTransport::send( $mail );
+    if ( !empty( $validation ) ) 
+    {
+        $parameters['validation'] = $validation;
+        
+        return $Module->run( 'form', $parameters );
+    }
+    
+    $mail = new eZMail();
+    
+    $user = eZUser::fetch( $objectID );
+    
+    $mail->setReceiver( $user->attribute( 'email' ) );
+    $mail->setSender( $email, $name );
+    $mail->setSubject( $subject );
+    $mail->setBody( $message );
+    $mailResult = eZMailTransport::send( $mail );
 
-	$tpl->setVariable( 'mail_result', $mailResult );
+    $tpl->setVariable( 'mail_result', $mailResult );
 }
 
 if ( $Module->isCurrentAction( 'Cancel' ) )
 {
-	$contentNodeID = $http->postVariable( 'ContentNodeID' );
-	$node =& eZContentObjectTreeNode::fetch( $contentNodeID );
-	
-	if ( $node )
-	{
-		return $Module->redirectTo( '/content/view/full/' . $contentNodeID );
-	}
-	else
-	{
-		if ( $http->hasPostVariable( 'UserRedirectURI' ) )
-		{
-			$userRedirectURI = $http->postVariable( 'UserRedirectURI' );
-			return $Module->redirectTo( $userRedirectURI );
-		}
-	}
+    $contentNodeID = $http->postVariable( 'ContentNodeID' );
+    $node = eZContentObjectTreeNode::fetch( $contentNodeID );
+    
+    if ( $node )
+    {
+        return $Module->redirectTo( '/content/view/full/' . $contentNodeID );
+    }
+    else
+    {
+        if ( $http->hasPostVariable( 'UserRedirectURI' ) )
+        {
+            $userRedirectURI = $http->postVariable( 'UserRedirectURI' );
+            return $Module->redirectTo( $userRedirectURI );
+        }
+    }
 }
 
 if ( $Module->isCurrentAction( 'Back' ) )
 {
-	$contentNodeID = $http->postVariable( 'ContentNodeID' );
-	$node =& eZContentObjectTreeNode::fetch( $contentNodeID );
-	
-	if ( $node )
-	{
-		return $Module->redirectTo( '/content/view/full/' . $contentNodeID );
-	}
-	else
-	{
-		if ( $http->hasPostVariable( 'UserRedirectURI' ) )
-		{
-			$userRedirectURI = $http->postVariable( 'UserRedirectURI' );
-			return $Module->redirectTo( $userRedirectURI );
-		}
-	}
+    $contentNodeID = $http->postVariable( 'ContentNodeID' );
+    $node = eZContentObjectTreeNode::fetch( $contentNodeID );
+    
+    if ( $node )
+    {
+        return $Module->redirectTo( '/content/view/full/' . $contentNodeID );
+    }
+    else
+    {
+        if ( $http->hasPostVariable( 'UserRedirectURI' ) )
+        {
+            $userRedirectURI = $http->postVariable( 'UserRedirectURI' );
+            return $Module->redirectTo( $userRedirectURI );
+        }
+    }
 }
-
 
 $Result = array();
 $Result['content'] = $tpl->fetch( 'design:authorcontact/formprocess.tpl' );
